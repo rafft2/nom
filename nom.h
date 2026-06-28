@@ -14,8 +14,8 @@
     #define ASSERT(x)
 #endif
 
-#define Kilobyes(value) ((value) * 1024LL)
-#define Megabytes(value) (Kilobyes(value) * 1024LL)
+#define Kilobytes(value) ((value) * 1024LL)
+#define Megabytes(value) (Kilobytes(value) * 1024LL)
 #define Gigabytes(value) (Megabytes(value) * 1024LL)
 #define Terabytes(value) (Gigabytes(value) * 1024LL)
 
@@ -27,7 +27,7 @@
 #define RAD2DEG(radians) ((radians) * 180.0f / PI32)
 #define MIN(A, B) (((A) < (B)) ? (A) : (B))
 #define MAX(A, B) (((A) > (B)) ? (A) : (B))
-#define ARRAY_COUNT(arr) sizeof(arr) / sizeof(arr[0])
+#define ARRAY_COUNT(arr) (sizeof(arr) / sizeof(arr[0]))
 
 typedef signed long long s64;
 typedef unsigned long long u64;
@@ -39,6 +39,21 @@ typedef unsigned char u8;
 typedef unsigned int b32;
 typedef float f32;
 typedef double f64;
+
+struct vec2
+{
+    f32 x, y;
+};
+
+struct vec2i
+{
+    s32 x, y;
+};
+
+struct vec3
+{
+    f32 x, y, z;
+};
 
 #define NOM_H
 #endif
