@@ -40,20 +40,105 @@ typedef unsigned int b32;
 typedef float f32;
 typedef double f64;
 
-struct vec2
+f32 SquareRoot(f32 a)
 {
-    f32 x, y;
-};
+    f32 result = sqrtf(a);
+    return(result);
+}
 
 struct vec2i
 {
     s32 x, y;
 };
 
+struct vec2
+{
+    f32 x, y;
+};
+
 struct vec3
 {
     f32 x, y, z;
 };
+
+vec3 Vec3()
+{
+    vec3 result = { 0.0f, 0.0f, 0.0f };
+    return(result);
+}
+
+vec3 Vec3(f32 v)
+{
+    vec3 result = { v, v, v };
+    return(result);
+}
+
+vec3 Vec3(f32 x, f32 y, f32 z)
+{
+    vec3 result = { x, y, z };
+    return(result);
+}
+
+f32 DotProduct(vec3 a, vec3 b)
+{
+    f32 result = a.x * b.x + a.y * b.y + a.z * b.z;
+    return(result);
+}
+
+f32 LengthSquared(vec3 a)
+{
+    f32 result = DotProduct(a, a);
+    return(result);
+}
+
+f32 Length(vec3 a)
+{
+    f32 result = SquareRoot(LengthSquared(a));
+    return(result);
+}
+
+vec3 Normalize(vec3 v)
+{
+    f32 length = Length(v);
+    if(length > 0)
+    {
+        vec3 result = { v.x / length, v.y / length, v.z / length };
+        return(result);
+    }
+    return(v);
+}
+
+vec3 CrossProduct(vec3 a, vec3 b)
+{
+    vec3 result;
+    result.x = a.y * b.z - a.z * b.y;
+    result.y = a.z * b.x - a.x * b.z;
+    result.z = a.x * b.y - a.y * b.x;
+    return(result);
+}
+
+struct mat4x4
+{
+    f32 e[4][4];
+ 
+    f32* operator[](u8 i) { return e[i]; }
+};
+
+mat4x4 operator*(mat4x4 &A, mat4x4 &B)
+{
+    mat4x4 result;
+    for(u32 i = 0; i < 4; i++)
+    {
+        for(u32 j = 0; j < 4; j++)
+        {
+            result.e[i][j] = A.e[i][0] * B.e[0][j] +
+                             A.e[i][1] * B.e[1][j] +
+                             A.e[i][2] * B.e[2][j] +
+                             A.e[i][3] * B.e[3][j];
+        }
+    }
+    return(result);
+}
 
 #define NOM_H
 #endif
