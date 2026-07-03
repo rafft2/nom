@@ -140,5 +140,78 @@ mat4x4 operator*(mat4x4 &A, mat4x4 &B)
     return(result);
 }
 
+mat4x4 Identity()
+{
+    mat4x4 result = {1, 0, 0, 0,
+                     0, 1, 0, 0,
+                     0, 0, 1, 0,
+                     0, 0, 0, 1};
+    return(result);
+}
+
+mat4x4 Transpose(mat4x4 A)
+{
+    mat4x4 result;
+    for(u32 i = 0; i < 4; i++)
+    {
+        for(u32 j = 0; j < 4; j++)
+        {
+            result.e[i][j] = A.e[j][i];
+        }
+    }
+    return(result);
+}
+
+mat4x4 Scaling(f32 a, f32 b, f32 c)
+{
+    mat4x4 result = {a, 0, 0, 0,
+                     0, b, 0, 0,
+                     0, 0, c, 0,
+                     0, 0, 0, 1};
+    return(result);
+}
+
+mat4x4 Scaling(f32 s)
+{
+    mat4x4 result = Scaling(s, s, s);
+    return(result);
+}
+
+mat4x4 RotationX(f32 theta)
+{
+    mat4x4 result = {1, 0, 0, 0,
+                     0, cosf(theta), sinf(theta), 0,
+                     0, -sinf(theta), cosf(theta), 0,
+                     0, 0, 0, 1};
+    return(result);
+}
+
+mat4x4 RotationY(f32 theta)
+{
+    mat4x4 result = {cosf(theta), 0, -sinf(theta), 0,
+                     0, 1, 0, 0,
+                     sinf(theta), 0, cosf(theta), 0,
+                     0, 0, 0, 1};
+    return(result);
+}
+
+mat4x4 RotationZ(f32 theta)
+{
+    mat4x4 result = {cosf(theta), sinf(theta), 0, 0,
+                     -sinf(theta), cosf(theta), 0, 0,
+                     0, 0, 1, 0,
+                     0, 0, 0, 1};
+    return(result);
+}
+
+mat4x4 Translation(f32 a, f32 b, f32 c)
+{
+    mat4x4 result = {1, 0, 0, 0,
+                     0, 1, 0, 0,
+                     0, 0, 1, 0,
+                     a, b, c, 1};
+    return(result);
+}
+
 #define NOM_H
 #endif
