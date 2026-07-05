@@ -79,6 +79,31 @@ vec3 Vec3(f32 x, f32 y, f32 z)
     return(result);
 }
 
+vec3 operator+(vec3 &a, vec3 &b)
+{
+    vec3 result;
+    result.x = a.x + b.x;
+    result.y = a.y + b.y;
+    result.z = a.z + b.z;
+    return(result);
+}
+
+vec3 &operator+=(vec3 &a, vec3 &b)
+{
+    a.x += b.x;
+    a.y += b.y;
+    a.z += b.z;
+    return(a);
+}
+
+vec3 &operator/=(vec3 &a, f32 b)
+{
+    a.x /= b;
+    a.y /= b;
+    a.z /= b;
+    return(a);
+}
+
 f32 DotProduct(vec3 a, vec3 b)
 {
     f32 result = a.x * b.x + a.y * b.y + a.z * b.z;
