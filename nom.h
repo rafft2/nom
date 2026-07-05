@@ -46,6 +46,16 @@ f32 SquareRoot(f32 a)
     return(result);
 }
 
+b32 NearZero(f32 value)
+{
+    return(fabs(value) <= EPSILON32);
+}
+
+b32 FloatEquals(f32 a, f32 b)
+{
+    return(NearZero(a - b));
+}
+
 struct vec2i
 {
     s32 x, y;
@@ -162,6 +172,15 @@ mat4x4 operator*(mat4x4 &A, mat4x4 &B)
                              A.e[i][3] * B.e[3][j];
         }
     }
+    return(result);
+}
+
+vec3 operator*(mat4x4 &A, vec3 &b)
+{
+    vec3 result;
+    result.x = A.e[0][0]*b.x + A.e[1][0]*b.y + A.e[2][0]*b.z + A.e[3][0];
+    result.y = A.e[0][1]*b.x + A.e[1][1]*b.y + A.e[2][1]*b.z + A.e[3][1];
+    result.z = A.e[0][2]*b.x + A.e[1][2]*b.y + A.e[2][2]*b.z + A.e[3][2];
     return(result);
 }
 
