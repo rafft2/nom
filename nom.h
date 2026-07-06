@@ -181,6 +181,13 @@ vec3 operator*(mat4x4 &A, vec3 &b)
     result.x = A.e[0][0]*b.x + A.e[1][0]*b.y + A.e[2][0]*b.z + A.e[3][0];
     result.y = A.e[0][1]*b.x + A.e[1][1]*b.y + A.e[2][1]*b.z + A.e[3][1];
     result.z = A.e[0][2]*b.x + A.e[1][2]*b.y + A.e[2][2]*b.z + A.e[3][2];
+    f32 w =    A.e[0][3]*b.x + A.e[1][3]*b.y + A.e[2][3]*b.z + A.e[3][3];
+    if(w != 1)
+    {
+        result.x /= w;
+        result.y /= w;
+        result.z /= w;
+    }
     return(result);
 }
 
@@ -256,6 +263,73 @@ mat4x4 Translation(f32 a, f32 b, f32 c)
                      a, b, c, 1};
     return(result);
 }
+
+mat4x4 CreatePerspectiveProjection(f32 vertical_fov_in_radians, f32 n, f32 f)
+{
+    f32 S = 1.0f / (tanf(vertical_fov_in_radians / 2.0f));
+    mat4x4 result = {S, 0,  0,           0,
+                     0, S,  0,           0,
+                     0, 0, -(f)/(f-n),  -1,
+                     0, 0, -(f*n)/(f-n), 1};
+    return(result);
+}
+
+mat4x4 CreatePerspectiveProjection(f32 n, f32 f, f32 l, f32 r, f32 b, f32 t)
+{
+    mat4x4 result = {(2.0f*n)/(r-l), 0,  0, 0,
+                     0, (2.0f*n)/(t-b),  0, 0,
+                     (r+l)/(r-l), (t+b)/(t-b), -(f+n)/(f-n), -1,
+                     0, 0, -(2.0f*f*n)/(f-n), 1};
+    return(result);
+}
+
+mat4x4 CreatePerspectiveProjection(f32 vertical_fov_in_radians, f32 aspect_ratio, f32 n, f32 f)
+{
+    f32 vertical_canvas_size = 2.0f * tanf(vertical_fov_in_radians / 2.0f) * n;
+    f32 horizontal_canvas_size = vertical_canvas_size * aspect_ratio;
+    f32 t = vertical_canvas_size / 2.0f;
+    f32 b = -t;
+    f32 r = horizontal_canvas_size / 2.0f;
+    f32 l = -r;
+
+    mat4x4 result = {(2.0f*n)/(r-l), 0,  0,           0,
+                     0, (2.0f*n)/(t-b),  0,           0,
+                     (r+l)/(r-l), (t+b)/(t-b), -(f+n)/(f-n), -1,
+                     0, 0, -(2.0f*f*n)/(f-n), 1};
+    return(result);
+}
+
+vec3 RasterFromViewByHandDontUse(vec3 p, f32 left, f32 right, f32 bottom, f32 top, f32 znear, s32 image_width, s32 image_height)
+{
+    // Leaving this here just to keep in mind the separated building blocks of the projection matrix
+
+    vec3 raster = { FLT_MAX, FLT_MAX, FLT_MAX };
+
+    // screen from view
+    raster.x = (p.x * znear) / -p.z;
+    raster.y = (p.y * znear) / -p.z;
+    raster.z = -p.z;
+
+    // NDC from screen (here NDC is [-1, +1])
+    raster.x = ((2.0f * raster.x) / (right - left)) - ((right + left) / (right - left));
+    raster.y = ((2.0f * raster.y) / (top - bottom)) - ((top + bottom) / (top - bottom));
+
+    // raster from NDC
+    raster.x = ((raster.x + 1.0f) / 2.0f) * ((f32)image_width - 1.0f);
+    raster.y = ((-raster.y + 1.0f) / 2.0f) * ((f32)image_height - 1.0f);
+
+    return(raster);
+}
+
+mat4x4 CreateOrthographicProjection(f32 n, f32 f, f32 l, f32 r, f32 b, f32 t)
+{
+    mat4x4 result = {2.0f/(r-l), 0,  0, 0,
+                     0, 2.0f/(t-b),  0, 0,
+                     0, 0, -2.0f/(f-n), 0,
+                     -(r+l)/(r-l), -(t+b)/(t-b), -(f+n)/(f-n), 1};
+    return(result);
+}
+
 
 #define NOM_H
 #endif
