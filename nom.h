@@ -28,6 +28,10 @@
 #define MIN(A, B) (((A) < (B)) ? (A) : (B))
 #define MAX(A, B) (((A) > (B)) ? (A) : (B))
 #define ARRAY_COUNT(arr) (sizeof(arr) / sizeof(arr[0]))
+#define IDX2D(x, y, w) ((y) * (w) + (x))
+#define IDX3D(x, y, z, w, h) ((z) * (h) * (w) + (y) * (w) + (x))
+#define IN_BOUNDS2D(x, y, w, h) (((x) >= 0 && (x) < (w) && (y) >= 0 && (y) < (h)))
+#define IN_BOUNDS3D(x, y, z, w, h, d) ((x) >= 0 && (x) < (w) && (y) >= 0 && (y) < (h) && (z) >= 0 && (z) < (d))
 
 typedef signed long long s64;
 typedef unsigned long long u64;
@@ -299,28 +303,6 @@ mat4x4 CreatePerspectiveProjection(f32 vertical_fov_in_radians, f32 aspect_ratio
     return(result);
 }
 
-vec3 RasterFromViewByHandDontUse(vec3 p, f32 left, f32 right, f32 bottom, f32 top, f32 znear, s32 image_width, s32 image_height)
-{
-    // Leaving this here just to keep in mind the separated building blocks of the projection matrix
-
-    vec3 raster = { FLT_MAX, FLT_MAX, FLT_MAX };
-
-    // screen from view
-    raster.x = (p.x * znear) / -p.z;
-    raster.y = (p.y * znear) / -p.z;
-    raster.z = -p.z;
-
-    // NDC from screen (here NDC is [-1, +1])
-    raster.x = ((2.0f * raster.x) / (right - left)) - ((right + left) / (right - left));
-    raster.y = ((2.0f * raster.y) / (top - bottom)) - ((top + bottom) / (top - bottom));
-
-    // raster from NDC
-    raster.x = ((raster.x + 1.0f) / 2.0f) * ((f32)image_width - 1.0f);
-    raster.y = ((-raster.y + 1.0f) / 2.0f) * ((f32)image_height - 1.0f);
-
-    return(raster);
-}
-
 mat4x4 CreateOrthographicProjection(f32 n, f32 f, f32 l, f32 r, f32 b, f32 t)
 {
     mat4x4 result = {2.0f/(r-l), 0,  0, 0,
@@ -329,7 +311,6 @@ mat4x4 CreateOrthographicProjection(f32 n, f32 f, f32 l, f32 r, f32 b, f32 t)
                      -(r+l)/(r-l), -(t+b)/(t-b), -(f+n)/(f-n), 1};
     return(result);
 }
-
 
 #define NOM_H
 #endif
