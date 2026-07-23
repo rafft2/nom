@@ -60,6 +60,13 @@ b32 FloatEquals(f32 a, f32 b)
     return(NearZero(a - b));
 }
 
+inline f32 Clampf(f32 value, f32 min, f32 max)
+{
+    if(value < min) return(min);
+    else if(value > max) return(max);
+    else return(value);
+}
+
 struct vec2i
 {
     s32 x, y;
